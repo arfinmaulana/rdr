@@ -1,0 +1,209 @@
+﻿<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Simulator pembelajaran relay untuk siswa SMK Teknik Kendaraan Ringan. Kenali kumparan dan kontak, bedakan jalur kontrol dan beban, lalu rangkai lampu melalui relay." />
+    <title>Simulator Rangkaian Dasar — Memahami Relay</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="app">
+    <header class="header">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M8 22l4-11q1-3 4-3h16q3 0 4 3l4 11M8 22h32q3 0 3 4v10H5V26q0-4 3-4ZM10 36v5h5v-5m18 0v5h5v-5M11 28h6m14 0h6M19 32h10M4 18h4m32 0h4" />
+        </svg>
+        <div>
+          <h1>Simulator Rangkaian Dasar</h1>
+          <div class="subtitle-row"><p>Memahami relay melalui jalur kontrol dan beban</p></div>
+        </div>
+      </div>
+      <nav class="header-actions" aria-label="Bantuan dan kontrol">
+        <button id="help-button" type="button" aria-haspopup="dialog" aria-controls="help-dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v15M12 5C8 2 4 3 2 4v15c4-2 7-1 10 1 3-2 6-3 10-1V4c-2-1-6-2-10 1Z" /></svg>Petunjuk</button>
+        <button id="undo-button" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 3 11l6 6M3 11h11a6 6 0 0 1 6 6v2" /></svg>Batalkan Kabel Terakhir</button>
+        <button id="reset-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-6v6h6M4 16a8 8 0 0 0 14 2l3-3m0 6v-6h-6" /></svg>Reset</button>
+      </nav>
+    </header>
+
+
+    <p class="orientation-notice" role="status">Gunakan laptop atau tablet dalam posisi landscape agar dua jalur mudah diamati. Pada layar sempit, putar perangkat dan gulir Area Rangkaian untuk melihat seluruh komponen.</p>
+    <main class="trainer" aria-label="Trainer rangkaian dasar">
+      <section class="workspace" aria-label="Area Rangkaian">
+        <div class="workspace-heading">
+          <div class="workspace-summary"><span class="workspace-title">Area Rangkaian</span><div id="relay-status" class="relay-status" role="status" aria-live="polite" aria-atomic="true"><span id="coil-status">Kumparan: tidak aktif</span><span id="contact-status">Kontak: terbuka</span></div></div>
+          <div id="current-legend" class="current-legend" hidden aria-label="Legenda visualisasi arus">
+            <span><i class="legend-line legend-control" aria-hidden="true"></i>Kontrol · melewati kumparan</span>
+            <span><i class="legend-line legend-load" aria-hidden="true"></i>Beban · tanpa kumparan</span>
+            <p id="legend-note">Lintasan representatif; segmen bersama memakai warna lintasan pertama.</p>
+          </div>
+        </div>
+        <div class="board-scroll" tabindex="0" role="region" aria-label="Area komponen; gulir untuk melihat seluruh Area Rangkaian">
+        <div class="board-content">
+        <svg class="component-board" viewBox="0 0 1280 840" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Komponen rangkaian kelistrikan dasar" aria-describedby="board-description">
+          <desc id="board-description">Bank lampu 12 V di atas, relay di tengah, dua sekring di kiri, baterai di kiri bawah, dan sakelar di kanan bawah. Pilih warna kabel, lalu pilih dua terminal untuk menghubungkannya. LED hanya menyala dengan polaritas benar; kumparan relay nonpolar dalam model ini.</desc>
+
+          <g id="lamp-bank" aria-label="Bank lampu"></g>
+
+          <g id="relay" class="component" data-state="off" transform="translate(510 335)" role="group" aria-label="Relay dengan kumparan dan kontak normalnya terbuka">
+            <rect class="component-housing" width="265" height="235" rx="7" />
+            <path d="M-18 52h122m54 0h125" />
+            <g transform="translate(104 52)"><path id="relay-moving-contact" d="M0 0h54" /></g>
+            <circle cx="104" cy="52" r="5" /><circle cx="158" cy="52" r="5" />
+            <path class="mechanical-link" d="M132 58v123" />
+            <path class="relay-coil" d="M-18 181h103m95 0h103M85 181c0-36 24-36 24 0 0-36 24-36 24 0 0-36 24-36 24 0 0-36 23-36 23 0" />
+            <text class="detail-label" x="132" y="213">Kumparan (coil)</text>
+            <text class="detail-label" x="204" y="108">Kontak</text>
+            <circle id="relay-30" class="terminal" cx="-18" cy="52" r="10" aria-label="Relay terminal 30"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="relay-30" cx="-18" cy="52" r="1" aria-hidden="true" />
+            <circle id="relay-87" class="terminal" cx="283" cy="52" r="10" aria-label="Relay terminal 87"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="relay-87" cx="283" cy="52" r="1" aria-hidden="true" />
+            <circle id="relay-85" class="terminal" cx="-18" cy="181" r="10" aria-label="Relay terminal 85"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="relay-85" cx="-18" cy="181" r="1" aria-hidden="true" />
+            <circle id="relay-86" class="terminal" cx="283" cy="181" r="10" aria-label="Relay terminal 86"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="relay-86" cx="283" cy="181" r="1" aria-hidden="true" />
+            <text class="terminal-label" x="-18" y="30">30</text><text class="terminal-label" x="283" y="30">87</text>
+            <text class="terminal-label" x="-18" y="213">85</text><text class="terminal-label" x="283" y="213">86</text>
+            <text class="component-label" x="132" y="267">Relay</text>
+          </g>
+
+          <g class="component" transform="translate(100 350)" role="group" aria-label="Sekring 1 dan Sekring 2">
+            <path d="M0 0h35m80 0h35M35-18h80v36H35zM50 0c0-13 15-13 25 0s25 13 25 0" />
+            <circle id="fuse-1-a" class="terminal" cx="0" cy="0" r="9" aria-label="Sekring 1 terminal A"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="fuse-1-a" cx="0" cy="0" r="1" aria-hidden="true" />
+            <circle id="fuse-1-b" class="terminal" cx="150" cy="0" r="9" aria-label="Sekring 1 terminal B"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="fuse-1-b" cx="150" cy="0" r="1" aria-hidden="true" />
+            <text class="detail-label" x="75" y="-31">Sekring 1</text>
+            <path d="M0 66h35m80 0h35M35 48h80v36H35zM50 66c0-13 15-13 25 0s25 13 25 0" />
+            <circle id="fuse-2-a" class="terminal" cx="0" cy="66" r="9" aria-label="Sekring 2 terminal A"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="fuse-2-a" cx="0" cy="66" r="1" aria-hidden="true" />
+            <circle id="fuse-2-b" class="terminal" cx="150" cy="66" r="9" aria-label="Sekring 2 terminal B"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="fuse-2-b" cx="150" cy="66" r="1" aria-hidden="true" />
+            <text class="detail-label" x="75" y="112">Sekring 2</text>
+          </g>
+
+          <g class="component" transform="translate(210 665)" role="group" aria-label="Baterai 12 volt">
+            <path d="M35-24v22m150-22v22M22 0v13h26V0zM172 0v13h26V0z" />
+            <rect class="component-housing" x="0" y="25" width="220" height="101" rx="6" />
+            <rect class="component-housing" x="-5" y="13" width="230" height="18" rx="4" />
+            <path d="M8-42h14M208-42h14m-7-7v14" />
+            <circle id="battery-negative" class="terminal" cx="35" cy="-24" r="10" aria-label="Baterai terminal negatif"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="battery-negative" cx="35" cy="-24" r="1" aria-hidden="true" />
+            <circle id="battery-positive" class="terminal" cx="185" cy="-24" r="10" aria-label="Baterai terminal positif"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="battery-positive" cx="185" cy="-24" r="1" aria-hidden="true" />
+            <text class="battery-voltage" x="110" y="86">12 V</text>
+            <text class="component-label" x="110" y="157">Baterai</text>
+          </g>
+
+          <g id="switch" class="component" data-state="off" transform="translate(1130 630)" role="group" aria-label="Sakelar dalam posisi off">
+            <path d="M0 20h35M0 82h35" />
+            <g id="switch-control" role="switch" tabindex="0" aria-label="Sakelar" aria-checked="false">
+            <rect class="component-housing" x="35" y="-5" width="92" height="112" rx="8" />
+            <g transform="translate(82 51)">
+            <g id="switch-rocker">
+              <path class="rocker-face" d="M-29-40h58v80h-58z" />
+              <path class="rocker-depth" d="M-29-40h58l-.8 11h-56.4z" />
+            <path class="switch-symbol-on" d="M0-23v14" />
+            <ellipse class="switch-symbol-off" cx="0" cy="21" rx="7" ry="9" />
+            </g>
+            </g>
+            <rect class="switch-hit-area" x="35" y="-5" width="92" height="112" rx="8" />
+            </g>
+            <circle id="switch-a" class="terminal" cx="0" cy="20" r="9" aria-label="Sakelar terminal A"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="switch-a" cx="0" cy="20" r="1" aria-hidden="true" />
+            <circle id="switch-b" class="terminal" cx="0" cy="82" r="9" aria-label="Sakelar terminal B"></circle>
+            <circle class="terminal-hit-area" data-terminal-id="switch-b" cx="0" cy="82" r="1" aria-hidden="true" />
+            <text id="switch-status" class="component-label" x="81" y="139">Sakelar OFF</text>
+          </g>
+        </svg>
+        <svg class="wire-layer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+        <svg class="wire-current-layer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+        <svg class="socket-layer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+        <svg class="current-overlay-layer" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+        </div>
+        </div>
+      </section>
+
+
+      <aside class="toolbar sidebar" aria-labelledby="tools-heading">
+        <h2 id="tools-heading">Alat &amp; Fitur</h2>
+        <button id="current-toggle" class="tool-button current-tool" type="button" aria-pressed="false"><svg class="card-icon current-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m18 3-12 15h9l-1 11 12-16h-9z" /></svg><span><strong>Visualisasi Arus</strong><small>Arus konvensional + → −</small></span></button>
+        <button class="tool-button" type="button" data-cable="red" aria-pressed="false"><svg class="card-icon cable-red" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4v5m14 14v5M6 9h6v7H6zM20 16h6v7h-6zM9 16v5a5 5 0 0 0 10 0v-7a4 4 0 0 1 4-4" /></svg><span><strong>Kabel Merah</strong><small>Pilih dua terminal</small></span></button>
+        <button class="tool-button" type="button" data-cable="black" aria-pressed="false"><svg class="card-icon cable-black" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4v5m14 14v5M6 9h6v7H6zM20 16h6v7h-6zM9 16v5a5 5 0 0 0 10 0v-7a4 4 0 0 1 4-4" /></svg><span><strong>Kabel Hitam</strong><small>Pilih dua terminal</small></span></button>
+        <div class="load-controls">
+          <label for="lamp-type">Jenis Lampu</label>
+          <select id="lamp-type"><option value="led">LED 12 V</option><option value="incandescent" selected>Lampu Pijar 12 V</option></select>
+          <label class="count-label" for="lamp-count">Jumlah Lampu</label>
+          <div class="lamp-count-controls"><button id="remove-lamp" type="button" aria-label="Kurangi Lampu">−</button><output id="lamp-count" aria-live="polite">1 lampu</output><button id="add-lamp" type="button" aria-label="Tambah Lampu">+</button></div>
+        </div>
+        <p id="brightness-note" class="toolbar-note">Amati hubungan kumparan, kontak, dan lampu.</p>
+      </aside>
+    </main>
+
+    <footer class="footer"><p><span class="info-icon" aria-hidden="true">i</span><span id="status-message" role="status" aria-live="polite" aria-atomic="true">Pilih kabel merah atau hitam.</span></p><span class="footer-brand">Kelistrikan Otomotif <span aria-hidden="true">|</span> TKR / SMK</span></footer>
+    </div>
+    <dialog id="help-dialog" aria-labelledby="help-title">
+      <div class="help-heading"><h2 id="help-title">Petunjuk Penggunaan</h2><button id="help-close" type="button" aria-label="Tutup petunjuk" autofocus><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button></div>
+      <p class="help-intro">Rangkai dua jalur, operasikan sakelar, lalu jelaskan perubahan relay dan lampu.</p>
+      <section class="help-section" aria-labelledby="learning-title">
+        <h3 id="learning-title">Tujuan Belajar</h3>
+        <ul>
+          <li>Mengenali <strong>kumparan 85–86</strong> dan <strong>kontak 30–87</strong> yang normalnya terbuka.</li>
+          <li>Membedakan fungsi <strong>jalur kontrol</strong> yang mengaktifkan kumparan dan <strong>jalur beban</strong> yang menghubungkan sumber ke lampu melalui kontak.</li>
+          <li>Merangkai lampu melalui relay serta menjelaskan responsnya.</li>
+        </ul>
+      </section>
+      <section class="help-section" aria-labelledby="usage-title">
+        <h3 id="usage-title">Cara Menggunakan</h3>
+        <ol>
+          <li>Mulai dengan satu <strong>Lampu Pijar 12 V</strong>. Pilih <strong>Kabel Merah</strong> atau <strong>Kabel Hitam</strong>, lalu pilih terminal pertama dan terminal tujuan. Pilih terminal pertama lagi untuk membatalkan pilihan.</li>
+          <li>Warna kabel membantu pengorganisasian rangkaian; warna sendiri tidak menentukan apakah sambungan benar secara listrik.</li>
+          <li>Rangkai jalur kontrol melalui kumparan dan jalur beban melalui kontak. Keduanya dapat memakai baterai yang sama.</li>
+          <li>Klik/tap badan <strong>sakelar</strong> untuk mengubah ON/OFF. Dengan keyboard, gunakan Tab untuk memilih kontrol/terminal, lalu Enter atau Spasi untuk mengoperasikannya.</li>
+          <li>Aktifkan <strong>Visualisasi Arus</strong> untuk menelusuri lintasan. Tombol ini hanya mengubah tampilan, bukan keadaan listrik.</li>
+          <li><strong>Batalkan Kabel Terakhir</strong> menghapus sambungan terakhir. <strong>Reset</strong> mengosongkan rangkaian dan mengembalikan pengaturan awal: satu lampu pijar, sakelar OFF, visualisasi OFF, serta pilihan kabel/terminal kosong.</li>
+          <li>Untuk pengayaan seri/paralel, gunakan tombol tambah/kurang (1–4 lampu) dan <strong>Jenis Lampu</strong>. LED berpolaritas (A positif, B negatif); pijar nonpolar. Mengurangi jumlah lampu juga menghapus kabel pada lampu terakhir.</li>
+        </ol>
+      </section>
+      <section class="help-section observation" aria-labelledby="observation-title">
+        <h3 id="observation-title">Pertanyaan Pengamatan</h3>
+        <p>Apakah kontak relay yang tertutup selalu membuat lampu menyala? Periksa kelengkapan jalur beban.</p>
+        <p>Bandingkan sakelar OFF, ON, dan jalur beban terputus. Hubungkan pengamatanmu dengan bagian relay asli bersama guru.</p>
+      </section>
+      <details class="help-section" id="limits-section">
+        <summary>Batas Simulasi</summary>
+        <ul>
+          <li>Model terutama menghitung konektivitas. Visualisasi menunjukkan <strong>lintasan arus konvensional</strong> dari positif ke negatif yang representatif; besar arus dan distribusi tegangan tidak diukur.</li>
+          <li>Biru menandai lintasan yang melewati kumparan, termasuk jika ada lampu di lintasan yang sama. Sian menandai lintasan beban tanpa kumparan. Segmen bersama digambar sekali dengan warna dan arah lintasan pertama; warna bukan pembagian arus fisik atau kategori eksklusif setiap kabel.</li>
+          <li><strong>Sekring putus belum dimodelkan.</strong> Hubungan singkat dan relay tidak stabil memunculkan peringatan; visualisasi normal tidak ditampilkan.</li>
+          <li>Terang pijar identik pada seri sederhana memakai pendekatan resistansi tetap: untuk n lampu dalam lintasan seri aktif, arus relatif 1/n dan daya relatif tiap lampu 1/n². Cabang paralel langsung mendapat daya relatif 1. Terang visual disesuaikan agar perbedaan terlihat; ini bukan pengukuran cahaya nyata.</li>
+          <li>Percabangan di antara lampu seri atau campuran dengan kumparan tidak dihitung dayanya: lampu ditentukan ON/OFF lewat konektivitas dengan terang nominal. LED tidak memakai rumus pijar.</li>
+          <li>Kumparan nonpolar dalam simulator <strong>tidak berlaku untuk semua relay nyata</strong>, terutama yang memiliki komponen proteksi internal. Periksa diagram dan spesifikasi relay asli bersama guru.</li>
+        </ul>
+      </details>
+      <details class="help-section" id="about-section">
+        <summary>Tentang Media</summary>
+        <p>Simulator Rangkaian Dasar adalah media pembelajaran relay untuk siswa kelas XI SMK Teknik Kendaraan Ringan. Sasaran belajarnya ialah mengenali bagian relay, membedakan jalur kontrol dan beban, serta merangkai lampu melalui relay dan menjelaskan responsnya.</p>
+        <p>Digunakan untuk demonstrasi guru, pengamatan bersama relay asli, serta eksplorasi dan latihan ulang melalui web atau salinan lokal. Penilaian dilakukan oleh guru; aplikasi tidak memberikan skor otomatis.</p>
+        <dl id="media-team" hidden></dl>
+        <p class="ai-disclosure"><strong>Bantuan AI:</strong> pengodean dan revisi media ini dibantu AI. Penggunaan AI juga diungkapkan dalam dokumen pengajuan.</p>
+      </details>
+      <section id="lkpd-section" class="help-section" hidden aria-labelledby="lkpd-title">
+        <h3 id="lkpd-title">LKPD Pendamping</h3>
+        <p id="lkpd-description"></p>
+        <a id="lkpd-link" target="_blank" rel="noopener">Buka LKPD (PDF, tab baru)</a>
+      </section>
+      <form method="dialog"><button class="help-done">Tutup Petunjuk</button></form>
+    </dialog>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

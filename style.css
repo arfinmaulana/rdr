@@ -1,0 +1,404 @@
+﻿:root {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #17212e;
+  background: #eff3f5;
+  font-synthesis: none;
+  line-height: 1.5;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button { font: inherit; }
+.header {
+  min-height: 92px;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: #fcfdfd;
+  border-bottom: 1px solid #e2e8ec;
+}
+.brand { display: flex; align-items: center; gap: 18px; }
+.brand-icon { width: 48px; height: 48px; flex-shrink: 0; stroke: #218147; stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+h1 { margin: 0; font-size: clamp(20px, 2vw, 29px); line-height: 1.25; letter-spacing: -.7px; font-weight: 700; }
+.subtitle-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; }
+.subtitle-row p { margin: 0; color: #738196; font-size: 14px; }
+.header-actions { display: flex; gap: 20px; }
+.header-actions button { display: flex; align-items: center; gap: 9px; padding: 8px 0; border: 0; background: transparent; color: #344154; font-size: 13px; }
+.header-actions svg, .toolbar h2 svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+button:disabled { opacity: 1; cursor: default; }
+.trainer { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1px; margin: 8px 8px 0; border: 1px solid #e5eaed; border-radius: 15px; overflow: hidden; background: #e5eaed; }
+.workspace { min-width: 0; background: #fff; padding: 16px 20px 22px; }
+.workspace-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #95a0aa; font-size: 10px; letter-spacing: 1.5px; }
+.component-board { display: block; width: 100%; height: auto; margin-top: 14px; }
+.board-scroll { min-width: 0; overflow: auto; }
+.board-content { position: relative; display: flow-root; width: 100%; }
+.wire-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.wire { fill: none; stroke-width: 2.85; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.wire-red { stroke: #dc3038; }
+.wire-black { stroke: #252b30; }
+.wire-halo { fill: none; stroke: #fff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.terminal.is-selected { stroke: #29994e; stroke-width: 7; filter: drop-shadow(0 0 3px #6ec78b); }
+.terminal:focus-visible { stroke: #29994e; stroke-width: 6; }
+.terminal, .terminal-hit-area { cursor: pointer; touch-action: manipulation; }
+.header-actions button:not(:disabled), .tool-button:not(:disabled) { cursor: pointer; touch-action: manipulation; }
+.tool-button[aria-pressed="true"] { border-color: #247b3b; background: #e6f5e8; box-shadow: inset 0 0 0 2px #247b3b; }
+.tool-button[aria-pressed="true"] strong::after { content: ' · Aktif'; color: #247b3b; font-size: 10px; white-space: nowrap; }
+button:focus-visible { outline: 2px solid #247b3b; outline-offset: 3px; }
+#status-message { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.board-scroll:focus-visible { outline: 2px solid #63a869; outline-offset: -2px; }
+.orientation-notice { display: none; }
+.component { fill: none; stroke: #171b1b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.component-housing { fill: #fff; }
+.terminal { fill: #202829; stroke: #fff; stroke-width: 2.5; paint-order: stroke fill; outline: none; filter: drop-shadow(0 0 1.2px #101717); }
+/* A transparent, non-scaling stroke keeps the target at least 44 CSS px.
+   The visual circle retains the terminal ID and is the future wire anchor. */
+.terminal-hit-area {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 44px;
+  vector-effect: non-scaling-stroke;
+  pointer-events: all;
+}
+/* Switch is interactive; the circuit engine controls relay and LED states.
+   Nested SVG groups place each pivot at the local origin. */
+#relay-moving-contact { transform: rotate(-28deg); transform-origin: 0 0; }
+#relay[data-state="on"] #relay-moving-contact { transform: rotate(0deg); }
+#switch-rocker { transform: translateY(-3px); transform-origin: 0 0; }
+#switch[data-state="on"] #switch-rocker { transform: translateY(3px); }
+.rocker-depth { fill: #c4cbd0; stroke-width: 1.5; }
+.switch-symbol-on { opacity: .4; stroke-width: 2; }
+.switch-symbol-off { opacity: 1; stroke-width: 4.5; }
+#switch[data-state="on"] .switch-symbol-on { opacity: 1; stroke-width: 4.5; }
+#switch[data-state="on"] .switch-symbol-off { opacity: .4; stroke-width: 2; }
+.lamp-light { fill: #fff; stroke: none; }
+.is-on .lamp-light { fill: #ffdf67; filter: drop-shadow(0 0 6px #efcd70); }
+.is-energized .relay-coil { stroke: #2c854c; }
+.undo-button { width: 100%; min-height: 44px; margin-top: 2px; border: 1px solid #a9b9ae; border-radius: 8px; background: #fff; color: #274933; font: inherit; font-size: 13px; cursor: pointer; touch-action: manipulation; }
+.undo-button:disabled { color: #87918c; background: #f0f3f1; cursor: default; }
+.footer.has-warning { background: #fff1ee; border-color: #da7663; color: #a12517; font-weight: 650; }
+.footer.has-warning .info-icon { background: #b63525; }
+.rocker-face { fill: #fafbfb; }
+#switch-control { cursor: pointer; touch-action: manipulation; outline: none; }
+.switch-hit-area { fill: transparent; stroke: none; pointer-events: all; }
+#switch-control:focus-visible .component-housing { stroke: #29994e; stroke-width: 5; }
+#switch[data-state="on"] .rocker-face { fill: #dcefe0; }
+#switch[data-state="on"] #switch-status { fill: #247b3b; }
+@media (prefers-reduced-motion: no-preference) {
+  #relay-moving-contact, #switch-rocker { transition: transform 180ms ease-in-out; }
+}
+.component text { stroke: none; fill: #151b1b; text-anchor: middle; font-family: 'Segoe UI', Arial, sans-serif; }
+.component-label { font-size: 20px; font-weight: 650; }
+.terminal-label { font-size: 18px; font-weight: 700; }
+.component .detail-label { font-size: 14px; fill: #728095; font-weight: 500; }
+.battery-voltage { font-size: 28px; font-weight: 750; }
+.mechanical-link { stroke-dasharray: 8 7; stroke-width: 2.5; }
+.toolbar { padding: 28px 20px; background: #f8fafb; }
+.toolbar h2 { display: flex; align-items: center; gap: 14px; margin: 0 0 24px 5px; color: #121a20; font-size: 21px; font-weight: 700; }
+.toolbar h2 svg { width: 26px; height: 26px; }
+.tool-button { display: flex; align-items: center; gap: 15px; width: 100%; min-height: 96px; margin-bottom: 16px; padding: 18px 15px; border: 1px solid #63a869; border-radius: 12px; background: #fff; color: #17201a; text-align: left; }
+.current-tool { background: #f0f8ed; border-color: #83b45c; }
+.tool-button strong { display: block; font-size: 17px; line-height: 1.3; font-weight: 650; }
+.tool-button small { display: block; margin-top: 5px; font-size: 12px; line-height: 1.6; color: #647184; }
+.tool-icon { width: 42px; height: 46px; flex-shrink: 0; overflow: visible; }
+.lightning { fill: #298331; }
+.cable-red { color: #df3037; }
+.cable-black { color: #242a2b; }
+.tool-icon:not(.lightning) path { fill: none; stroke: currentColor; stroke-width: 7; }
+.tool-icon circle { fill: #252d2d; stroke: #fff; stroke-width: 1.5; outline: none; }
+.toolbar-note { color: #8a949c; font-size: 11px; line-height: 1.7; margin: 24px 4px 0; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 12px 20px 16px; padding: 12px 15px; border: 1px solid #d4e3ea; border-radius: 9px; background: #f8fbfd; color: #64758a; font-size: 12px; }
+.footer p { display: flex; align-items: center; gap: 12px; margin: 0; }
+.info-icon { display: inline-grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: #5685a5; color: white; font: bold 16px Georgia, serif; }
+.footer-brand { white-space: nowrap; font-size: 11px; }
+.footer-brand span { margin: 0 8px; color: #c4cdd4; }
+
+@media (min-width: 1600px) {
+  .trainer { grid-template-columns: minmax(0, 1fr) 340px; }
+  .component-board { max-width: 1150px; margin-inline: auto; }
+}
+@media (max-width: 1050px) {
+  .header { padding: 16px 20px; }
+  .brand { gap: 12px; }
+  .brand-icon { width: 38px; }
+  .trainer { grid-template-columns: minmax(0, 1fr) 250px; }
+  .toolbar { padding: 24px 14px; }
+  .tool-button { gap: 10px; padding: 14px 12px; }
+  .tool-button strong { font-size: 15px; }
+  .tool-icon { width: 34px; }
+  .workspace { padding-inline: 12px; }
+  .component-board { min-width: 760px; }
+  .board-content { min-width: 760px; }
+  .footer-brand { display: none; }
+}
+@media (max-width: 760px) {
+  .header { align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+  .header-actions { margin-left: 50px; }
+  .trainer { grid-template-columns: minmax(0, 1fr); }
+  .toolbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .toolbar h2, .toolbar-note { grid-column: 1 / -1; margin: 0; }
+  .tool-button { flex-direction: column; align-items: flex-start; margin: 0; }
+  .tool-button small { font-size: 11px; }
+  .footer { margin-inline: 8px; }
+}
+
+/* Touch layouts scroll the board, keeping the tool column in view.
+   The minimum board width prevents adjacent touch targets overlapping. */
+@media (pointer: coarse) and (orientation: landscape) and (max-width: 1400px),
+       (max-width: 950px) and (orientation: landscape) {
+  .header { min-height: 64px; padding: 10px 16px; flex-wrap: nowrap; gap: 12px; }
+  h1 { font-size: 19px; }
+  .subtitle-row p { font-size: 11px; }
+  .header-actions { margin-left: 0; gap: 12px; }
+  .header-actions button { font-size: 12px; }
+  .trainer {
+    grid-template-columns: minmax(0, 1fr) 195px;
+    height: calc(100vh - 135px);
+    height: calc(100svh - 135px);
+    min-height: 240px;
+  }
+  .workspace { display: flex; flex-direction: column; min-height: 0; padding: 10px; }
+  .workspace-heading { flex-shrink: 0; font-size: 9px; }
+  .board-scroll { flex: 1; min-height: 0; margin-top: 8px; }
+  .component-board { min-width: 760px; margin-top: 4px; }
+  .board-content { min-width: 760px; }
+  .toolbar { display: block; overflow-y: auto; min-height: 0; padding: 12px; }
+  .toolbar h2 { font-size: 16px; gap: 8px; margin: 0 0 12px; }
+  .toolbar h2 svg { width: 20px; height: 20px; }
+  .tool-button { flex-direction: row; align-items: center; min-height: 54px; padding: 10px; gap: 8px; margin-bottom: 10px; }
+  .tool-icon { width: 25px; height: 30px; }
+  .tool-button strong { font-size: 13px; }
+  .tool-button small { display: none; }
+  .toolbar-note { font-size: 10px; margin: 12px 0 0; }
+  .footer { margin-block: 8px; padding: 8px 12px; font-size: 11px; }
+}
+
+/* Touch input restriction avoids showing an orientation prompt on laptops
+   or desktop monitors merely because their window is tall. */
+@media (orientation: portrait) and (pointer: coarse) and (max-width: 1400px) {
+  .orientation-notice {
+    display: block;
+    margin: 16px;
+    padding: 18px 20px;
+    border: 1px solid #c7ddcb;
+    border-radius: 10px;
+    background: #f0f8ed;
+    color: #315a3b;
+    text-align: center;
+    font-size: 15px;
+  }
+}
+
+/* Desktop: header and status take their natural height; the board receives
+   only the remaining viewport height. Touch/tablet rules above stay intact. */
+@media (min-width: 951px) and (pointer: fine), (min-width: 1401px) and (orientation: landscape) {
+  html, body { height: 100%; overflow: hidden; }
+  .app {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .header { min-height: 72px; padding: clamp(10px, 1.2vh, 16px) 24px; }
+  h1 { font-size: clamp(20px, 1.9vw, 28px); }
+  .trainer {
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 20vw, 300px);
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+  }
+  .workspace {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 8px;
+    min-height: 0;
+    padding: 10px clamp(12px, 1.4vw, 22px);
+    overflow: hidden;
+  }
+  .board-scroll { min-height: 0; margin: 0; overflow: hidden; }
+  .board-content { height: 100%; min-width: 0; }
+  /* The existing SVG viewBox keeps the drawing proportional and fully visible.
+     Reset earlier width limits so they cannot force overflow at laptop sizes. */
+  .component-board {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+  }
+  .toolbar { min-height: 0; overflow: auto; padding: clamp(16px, 2.4vh, 28px) 16px; }
+  .toolbar h2 { margin-bottom: clamp(12px, 2vh, 24px); }
+  .tool-button { min-height: 80px; padding: 14px 12px; margin-bottom: 12px; gap: 12px; }
+  .toolbar-note { margin-top: 16px; }
+  .footer { min-width: 0; margin: 6px 12px; padding: 6px 12px; white-space: nowrap; }
+  .footer p { min-width: 0; font-size: 11px; }
+  .info-icon { width: 20px; height: 20px; font-size: 14px; }
+}
+
+/* Compact spacing for lower laptop viewports without shrinking hit areas. */
+@media (min-width: 951px) and (pointer: fine) and (max-height: 800px) {
+  .toolbar { padding-top: 16px; }
+  .toolbar h2 { margin-bottom: 14px; font-size: 19px; }
+  .tool-button { min-height: 72px; padding-block: 10px; margin-bottom: 10px; }
+  .tool-button strong { font-size: 16px; }
+  .toolbar-note { margin-top: 12px; }
+}
+
+
+.load-controls { grid-column: 1 / -1; margin: 12px 0; padding: 12px; border: 1px solid #d5dfd8; border-radius: 9px; background: #fff; }
+.load-controls label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.load-controls select { width: 100%; min-height: 38px; border: 1px solid #a9b9ae; border-radius: 6px; background: white; color: #274933; font: inherit; font-size: 13px; padding: 6px; }
+.lamp-count-controls { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 6px; margin-top: 8px; text-align: center; font-size: 13px; }
+.lamp-count-controls button { min-height: 44px; border: 1px solid #a9b9ae; border-radius: 6px; background: #f3f8f4; color: #274933; font-size: 22px; cursor: pointer; touch-action: manipulation; }
+.lamp-count-controls button:disabled { color: #a5afa8; cursor: default; }
+@media (min-width: 951px) and (pointer: fine) and (max-height: 800px) {
+  .toolbar { padding-top: 12px; padding-bottom: 12px; }
+  .toolbar h2 { margin-bottom: 10px; }
+  .tool-button { min-height: 60px; padding-block: 8px; margin-bottom: 8px; }
+  .load-controls { margin: 8px 0; padding: 8px; }
+  .toolbar-note { margin-top: 8px; }
+}
+
+
+
+/* Stage 6 restores the right sidebar; no desktop control bar. */
+.sidebar.toolbar { display: block; padding: 16px 14px; overflow: auto; }
+.sidebar h2 { font-size: 20px; margin: 0 0 14px; }
+.sidebar .tool-button { min-height: 62px; padding: 10px 12px; margin: 0 0 10px; }
+.sidebar .tool-button strong { font-size: 16px; }
+.sidebar .tool-button small { font-size: 11px; margin-top: 3px; }
+.sidebar .load-controls { padding: 10px; margin: 12px 0 0; }
+.sidebar select { min-height: 44px; }
+.count-label { margin-top: 12px; }
+.sidebar .toolbar-note { font-size: 11px; line-height: 1.5; margin: 12px 0 0; }
+.header-actions button { min-height: 44px; white-space: nowrap; }
+.header-actions #undo-button:disabled { opacity: .45; }
+.cable-swatch { width: 24px; height: 4px; border-radius: 3px; flex-shrink: 0; }
+.cable-swatch.red { background: #dc3038; }
+.cable-swatch.black { background: #252b30; }
+.board-content { isolation: isolate; }
+.wire-layer { z-index: 1; }
+.component-board { position: relative; z-index: 2; }
+.current-overlay-layer { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.internal-current-geometry { fill: none; stroke: none; visibility: hidden; pointer-events: none; }
+.current-segment { fill: none; stroke: #00bdd6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 18; pointer-events: none; animation: current-flow .8s linear infinite; }
+.current-control { stroke: #209fe8; }
+.current-internal { stroke-width: 2; }
+@keyframes current-flow { from { stroke-dashoffset: var(--phase); } to { stroke-dashoffset: var(--phase-end); } }
+.is-on .lamp-light { opacity: var(--visual-intensity, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .current-segment { animation: none; stroke-dasharray: none; opacity: .8; }
+}
+@media (max-width: 1050px) {
+  .header-actions { gap: 10px; }
+  .sidebar.toolbar { padding: 12px; }
+  .sidebar .tool-button strong { font-size: 14px; }
+}
+@media (min-width: 951px) and (pointer: fine), (min-width: 1401px) and (orientation: landscape) {
+  .app { grid-template-rows: auto minmax(0, 1fr) auto; }
+  .trainer { grid-template-columns: minmax(0, 1fr) clamp(230px, 20vw, 285px); }
+}
+@media (pointer: coarse) and (orientation: landscape) and (max-width: 1400px), (max-width: 950px) and (orientation: landscape) {
+  .trainer { grid-template-columns: minmax(0, 1fr) 210px; height: calc(100svh - 135px); min-height: 240px; }
+  .sidebar .tool-button { min-height: 44px; margin-bottom: 6px; padding: 8px; }
+}
+
+/* Stage 6.5: medium cards, consistent inline icons and native help dialog. */
+.brand-icon { stroke-width: 2.5; }
+.header-actions svg { width: 22px; height: 22px; }
+.sidebar .tool-button { min-height: 74px; gap: 12px; padding: 10px 12px; border-color: #a9cbb4; box-shadow: 0 2px 5px #163d2510; }
+.sidebar .tool-button strong { font-size: 15px; }
+.sidebar .tool-button > span { min-width: 0; }
+.card-icon { width: 32px; height: 36px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+.current-icon { color: #218147; fill: #e2f4e8; }
+.sidebar .tool-button[aria-pressed="true"] { border-color: #247b3b; background: #e6f5e8; box-shadow: inset 0 0 0 1px #247b3b; }
+.sidebar .tool-button[aria-pressed="true"] strong::after { display: block; content: 'Aktif'; font-size: 10px; margin-top: 2px; }
+@media (hover: hover) { .sidebar .tool-button:hover { border-color: #247b3b; background: #f0f8f2; } }
+#help-dialog { width: min(560px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 24px; border: 1px solid #cdded3; border-radius: 16px; color: #273a31; background: #fcfefd; box-shadow: 0 20px 70px #142c3433; }
+#help-dialog::backdrop { background: #142c3466; }
+.help-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.help-heading h2 { margin: 0; font-size: 21px; }
+#help-close { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 0; border-radius: 8px; background: #edf4ef; color: #315b3c; cursor: pointer; }
+#help-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.help-intro { font-size: 13px; color: #738177; margin: 4px 0 18px; }
+#help-dialog ol { padding-left: 24px; margin: 0; font-size: 14px; }
+#help-dialog li { padding-left: 5px; margin-bottom: 10px; }
+#help-dialog li::marker { color: #27814b; font-weight: 700; }
+#help-dialog form { text-align: right; margin-top: 20px; }
+.help-done { min-height: 44px; padding: 9px 18px; border: 0; border-radius: 8px; background: #247b3b; color: #fff; cursor: pointer; }
+@media (pointer: coarse) and (orientation: landscape) and (max-width: 1400px), (max-width: 950px) and (orientation: landscape) {
+  .sidebar .tool-button { min-height: 56px; padding: 8px; gap: 8px; }
+  .sidebar .tool-button strong { font-size: 13px; }
+  .card-icon { width: 26px; height: 30px; }
+}
+
+/* Wires and their current stay behind bodies. Internal current is intentionally
+   above artwork; socket caps and selection sit above both without intercepting taps. */
+.component-board { z-index: 3; }
+.wire-current-layer, .socket-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.wire-current-layer { z-index: 2; }
+.current-overlay-layer { z-index: 4; }
+.socket-layer { z-index: 5; }
+.socket-visual { fill: #202829; stroke: #fff; stroke-width: 2; paint-order: stroke fill; }
+.socket-visual.is-selected { stroke: #29994e; stroke-width: 7; filter: drop-shadow(0 0 3px #6ec78b); }
+
+/* Learning-focused labels and status occupy normal layout, outside wire geometry. */
+[hidden] { display: none !important; }
+.brand { min-width: 0; }
+.subtitle-row p { color: #536477; }
+.header-actions { flex-shrink: 0; }
+.workspace-heading { display: block; color: #344b5b; letter-spacing: normal; font-size: 13px; }
+.workspace-summary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 18px; }
+.workspace-title { font-weight: 700; }
+.relay-status { display: flex; flex-wrap: wrap; gap: 4px 16px; font-weight: 600; }
+.relay-status[data-state="on"] { color: #246435; }
+.relay-status[data-state="warning"] { color: #9a291b; }
+#relay[data-state="warning"] #relay-moving-contact { visibility: hidden; }
+#relay .detail-label { font-size: 23px; font-weight: 650; fill: #344451; }
+#relay .terminal-label { font-size: 25px; fill: #17212e; }
+.component .detail-label { fill: #46566a; }
+.sidebar .toolbar-note { color: #526477; font-size: 12px; }
+.current-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 20px; margin-top: 5px; font-size: 12px; color: #425363; }
+.current-legend > span { display: inline-flex; align-items: center; gap: 7px; }
+.legend-line { width: 24px; height: 0; border-top: 3px solid; flex-shrink: 0; }
+.legend-control { border-color: #209fe8; }
+.legend-load { border-color: #00bdd6; }
+.current-legend p { flex-basis: 100%; margin: 0; font-size: 11px; }
+#help-dialog { width: min(680px, calc(100% - 32px)); padding-top: 0; font-size: 14px; scroll-padding-top: 80px; }
+.help-heading { position: sticky; top: 0; z-index: 1; padding: 16px 0 8px; background: #fcfefd; }
+.help-intro { color: #53685b; }
+.help-section { margin-top: 18px; }
+.help-section h3, .help-section summary { font-size: 16px; font-weight: 700; margin: 0 0 8px; color: #254d33; }
+.help-section summary { cursor: pointer; min-height: 44px; padding-block: 10px; border-bottom: 1px solid #dce6df; }
+.help-section summary:focus-visible, #lkpd-link:focus-visible { outline: 2px solid #247b3b; outline-offset: 3px; }
+.help-section p { margin: 8px 0; }
+#help-dialog ul { padding-left: 24px; margin: 0; }
+#help-dialog li { margin-bottom: 7px; }
+.observation { border-left: 3px solid #79a58a; padding-left: 14px; }
+#media-team > div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; margin-block: 5px; }
+#media-team dt { font-weight: 600; }
+#media-team dd { margin: 0; overflow-wrap: anywhere; }
+.ai-disclosure { font-size: 13px; color: #52665a; }
+#lkpd-link { display: inline-flex; align-items: center; min-height: 44px; color: #205a33; font-weight: 650; text-underline-offset: 3px; }
+.footer.has-warning { white-space: normal; }
+.footer.has-warning #status-message { overflow: visible; }
+@media (max-width: 1100px) {
+  .header { flex-wrap: wrap; gap: 4px 16px; }
+  .header-actions { margin-left: 0; gap: 18px; }
+  .workspace-summary { font-size: 12px; }
+}
+@media (max-width: 760px) {
+  .header { padding: 12px; }
+  .brand { gap: 10px; }
+  .brand-icon { width: 30px; height: 38px; }
+  .header-actions { flex-wrap: wrap; gap: 4px 18px; }
+  .header-actions button { font-size: 12px; }
+  .subtitle-row p { font-size: 12px; }
+  .orientation-notice { display: block; margin: 8px; padding: 12px; background: #f0f8ed; border: 1px solid #c7ddcb; border-radius: 8px; color: #315a3b; font-size: 13px; }
+  #help-dialog { padding-inline: 16px; }
+  .help-heading h2 { font-size: 19px; }
+}
